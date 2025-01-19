@@ -1,0 +1,58 @@
+#CÓDIGO PYTHON 1
+# Insere na tabela clientes 100 registros atribuindo custo de aquisição de R$150,00 e valor de primeira compra de R$100,00. Para cada cliente, registra uma compra na tabela compras com o valor de R$100,00 e tipo "primeira".
+
+import mysql.connector
+from datetime import datetime
+
+# Configuração do banco de dados
+db_config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': '1234',
+    'database': 'desafiolivup',
+}
+
+def populate_data():
+    # Conectar ao banco de dados
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor()
+
+    try:
+        for cliente_id in range(1, 101):
+            nome = f'Cliente {cliente_id}'
+            custo_aquisicao = 150.00
+            valor_primeira_compra = 100.00
+
+            # Inserir na tabela clientes
+            cursor.execute(
+                """
+                INSERT INTO clientes (nome, custo_aquisicao, valor_primeira_compra)
+                VALUES (%s, %s, %s)
+                """,
+                (nome, custo_aquisicao, valor_primeira_compra)
+            )
+
+            # Registrar uma compra na tabela compras
+            data_compra = datetime.now()
+            cursor.execute(
+                """
+                INSERT INTO compras (id_cliente, data_compra, valor_compra, tipo_compra)
+                VALUES (%s, %s, %s, %s)
+                """,
+                (cliente_id, data_compra.strftime('%Y-%m-%d %H:%M:%S'), valor_primeira_compra, 'primeira')
+            )
+
+        # Confirmar as transações
+        conn.commit()
+        print("Dados inseridos com sucesso!")
+
+    except mysql.connector.Error as e:
+        print(f"Erro ao inserir os dados: {e}")
+        conn.rollback()
+
+    finally:
+        cursor.close()
+        conn.close()
+
+# Executar a função
+populate_data()
