@@ -1,0 +1,24 @@
+CREATE SCHEMA desafioLivUp;
+USE desafiolivup;
+
+CREATE TABLE clientes(
+id_cliente INTEGER PRIMARY KEY AUTO_INCREMENT,
+nome VARCHAR(50),
+custo_aquisicao DOUBLE(5,2),
+valor_primeira_compra DOUBLE(5,2)
+);
+
+CREATE TABLE compras(
+id_compra INTEGER PRIMARY KEY AUTO_INCREMENT,
+id_cliente INTEGER,
+data_compra DATETIME,
+valor_compra DOUBLE(5,2),
+tipo_compra ENUM('primeira', 'recompra'), 
+FOREIGN KEY (id_cliente) REFERENCES clientes (id_cliente)
+);
+
+CREATE TABLE probabilidades_mes(
+id INTEGER PRIMARY KEY AUTO_INCREMENT,
+mes INTEGER,
+probabilidade_recompra DOUBLE(5,2)
+);
