@@ -1,0 +1,74 @@
+#CÓDIGO PYTHON 3
+#Preenche a tabela compras adicionando para cada mês, o número de compras com base no percentual definido na tabela probabilidade, considerando 100 clientes. O valor da recompra é fixo em R$200, e a data da compra é
+#configurada como o primeiro dia de cada mês.
+
+
+import mysql.connector
+from datetime import datetime
+import random
+
+# Configurações do banco de dados
+db_config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': '1234',
+    'database': 'desafiolivup',
+}
+
+conn = mysql.connector.connect(**db_config)
+cursor = conn.cursor()
+
+def alimentar_compras():
+    dados_meses = [
+        (1, 0.00),
+        (2, 20.00),
+        (3, 9.20),
+        (4, 9.16),
+        (5, 10.48),
+        (6, 10.91),
+        (7, 10.27),
+        (8, 9.84),
+        (9, 10.11),
+        (10, 5.00),
+        (11, 5.00),
+        (12, 5.00)
+    ]
+
+    cursor.execute("SELECT id_cliente FROM clientes")
+    ids_clientes = [row[0] for row in cursor.fetchall()]
+
+    if not ids_clientes:
+        print("Nenhum cliente encontrado na tabela.")
+        return
+
+    valor_compra = 200
+
+    # Alimentando a tabela de compras com as recompras
+    for mes, percentual in dados_meses:
+        num_compras = int((percentual / 100) * len(ids_clientes))  # Calcula o número de clientes que fizeram a compra
+
+        # Seleciona 'num_compras' clientes únicos sem reposição
+        clientes_selecionados = random.sample(ids_clientes, min(num_compras, len(ids_clientes)))
+
+        for id_cliente in clientes_selecionados:
+            # Define a data da compra para o primeiro dia do mês
+            data_compra = datetime(2025, mes, 1).strftime('%Y-%m-%d')
+
+            # Insere os dados na tabela compras
+            cursor.execute(
+                """
+                INSERT INTO compras (id_cliente, valor_compra, data_compra, tipo_compra)
+                VALUES (%s, %s, %s, %s)
+                """,
+                (id_cliente, valor_compra, data_compra, 'recompra')
+            )
+
+        print(f"Mês {mes}: {len(clientes_selecionados)} compras adicionadas no valor de R${valor_compra}.")
+
+    conn.commit()
+
+try:
+    alimentar_compras()
+finally:
+    # Fecha a conexão
+    conn.close()
