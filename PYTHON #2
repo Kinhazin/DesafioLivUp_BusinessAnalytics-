@@ -1,0 +1,56 @@
+#CÓDIGO PYTHON 2:
+#Insere na tabela mes_probabilidade probabilidades para cada mês de forma aleatória. Para o mês após a compra, a probabilidade é de 20%, para o 3º ao 9º varia entre 7% a 12%, e do 10º para frente é fixo em 5%. 
+#(Valores entre 7 e 12 pois assumi que seriam um valores plausíveis para o case)
+
+
+import mysql.connector
+import random
+from datetime import datetime
+
+# Configuração do banco de dados
+db_config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': '1234',
+    'database': 'desafiolivup',
+}
+
+def populate_probabilities():
+    # Conectar ao banco de dados
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor()
+
+    try:
+        for mes in range(1, 13):  # Exemplo: 12 meses
+            if mes == 1:
+                probabilidade = 0  # O mês 0: Não há recompras, apenas ticket inicial
+            elif mes == 2:  # Primeiro mês após a primeira compra, 20% de recompras
+                probabilidade = 20
+            elif mes < 10:
+                probabilidade = random.uniform(7, 12)  # Entre 7% e 12%
+            else:
+                probabilidade = 5  # Após o 10º mês: 5%
+
+            # Inserir na tabela probabilidades_mes
+            cursor.execute(
+                """
+                INSERT INTO probabilidades_mes (mes, probabilidade_recompra)
+                VALUES (%s, %s)
+                """,
+                (mes, round(probabilidade, 2))
+            )
+
+        # Confirmar as transações
+        conn.commit()
+        print("Tabela 'probabilidades_mes' preenchida com sucesso!")
+
+    except mysql.connector.Error as e:
+        print(f"Erro ao preencher a tabela 'probabilidades_mes': {e}")
+        conn.rollback()
+
+    finally:
+        cursor.close()
+        conn.close()
+
+# Executar a função
+populate_probabilities()
