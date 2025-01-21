@@ -1,6 +1,6 @@
-# Case de Business Analytics - Liv Up
+# Business Analytics 
 
-Este repositório foi criado para armazenar os códigos **MySQL** e **Python** relacionados ao case de **Business Analytics da Liv Up**. 
+Este repositório foi criado para armazenar os códigos **MySQL** e **Python** relacionados ao case de **Business Analytics**. 
 ---
 
 ## 📂 Estrutura do Repositório
