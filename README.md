@@ -14,6 +14,7 @@ Este repositório foi criado para armazenar os códigos **MySQL** e **Python** r
   - Incluem a criação e manipulação de tabelas no banco de dados.
   - Estruturas básicas para `clientes`, `compras` e `probabilidades_mes`.
 
+- **Apresentação:**[Clique aqui](https://docs.google.com/presentation/d/1xusD_UzQ058CrY8t7VaEP9rbOyaD9E9T0K3DxpyDtrE/edit?usp=sharing)
 ---
 
 ## 🛠️ Tecnologias Utilizadas
